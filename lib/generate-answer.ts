@@ -7,9 +7,6 @@ export async function generateAnswer(query: string) {
     apiKey: process.env.PPLX_API,
   })
 
-
-
-
   try {
     const response = await fetch("https://timeapi.io/api/time/current/zone?timeZone=UTC");
     const data = await response.json();
@@ -18,7 +15,7 @@ export async function generateAnswer(query: string) {
     console.log('Got date and time:' + dateTime)
 
     // Use Perplexity to generate an answer with sources
-    const { text, sources, providerMetadata } = await generateText({
+    const { text, sources } = await generateText({
       model: perplexity("sonar"),
       prompt: query,
       // This system prompt helps categorize the answer
