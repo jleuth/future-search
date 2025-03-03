@@ -25,9 +25,7 @@ export async function generateAnswer(query: string) {
     // Extract sources from the Perplexity response
     const formattedSources =
       sources?.map((source) => ({
-        title: source.title || "Untitled Source",
         url: source.url,
-        snippet: source.snippet || "No preview available",
       })) || []
 
     // Use the determineCategories function from search-history.ts

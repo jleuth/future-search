@@ -11,11 +11,7 @@ export function SourceCitation({ source }: { source: Source }) {
   return (
     <Card>
       <CardContent className="pt-6">
-        <h3 className="font-medium mb-2 line-clamp-1">{source.title}</h3>
-        <p className="text-sm text-muted-foreground line-clamp-3">{source.snippet}</p>
-      </CardContent>
-      <CardFooter className="border-t pt-4">
-        <a
+         <a
           href={source.url}
           target="_blank"
           rel="noopener noreferrer"
@@ -24,7 +20,7 @@ export function SourceCitation({ source }: { source: Source }) {
           <ExternalLink className="h-3 w-3" />
           {new URL(source.url).hostname}
         </a>
-      </CardFooter>
+      </CardContent>
     </Card>
   )
 }
