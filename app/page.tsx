@@ -9,7 +9,7 @@ export default function Home() {
         <div className="container flex h-14 items-center">
           <div className="mr-4 flex">
             <a className="flex items-center space-x-2" href="/">
-              <span className="font-bold">InsightEngine</span>
+              <span className="font-bold">FutureKB</span>
             </a>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-2">
@@ -21,7 +21,7 @@ export default function Home() {
         <div className="container flex flex-col items-center justify-center space-y-8 py-10 md:py-16">
           <div className="mx-auto flex w-full flex-col items-center space-y-4 md:w-2/3">
             <h1 className="text-center text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-              Get instant answers with AI
+              What can I show you?
             </h1>
             <p className="text-center text-muted-foreground md:text-xl">
               Ask any question and get accurate, sourced answers in seconds

@@ -7,15 +7,22 @@ export async function generateAnswer(query: string) {
     apiKey: process.env.PPLX_API,
   })
 
+
+
+
   try {
+    const response = await fetch("https://timeapi.io/api/time/current/zone?timeZone=UTC");
+    const data = await response.json();
+    const dateTime = data.dateTime; // Extract the dateTime
+
+    console.log('Got date and time:' + dateTime)
+
     // Use Perplexity to generate an answer with sources
     const { text, sources, providerMetadata } = await generateText({
-      model: perplexity("sonar-pro"),
+      model: perplexity("sonar"),
       prompt: query,
       // This system prompt helps categorize the answer
-      system: `You are an AI assistant that provides accurate, well-structured answers with proper citations.
-      For each answer, identify 2-4 relevant categories that best describe the query's domain or intent.
-      Always provide comprehensive answers with factual information.`,
+      system: `You are an AI web search assistant, helping users with tech-focused and general knowledge questions. The current time and date is` + dateTime ,
     })
 
     // Extract sources from the Perplexity response
