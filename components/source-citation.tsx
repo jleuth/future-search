@@ -2,9 +2,7 @@ import { ExternalLink } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 
 interface Source {
-  title: string
   url: string
-  snippet: string
 }
 
 export function SourceCitation({ source }: { source: Source }) {
