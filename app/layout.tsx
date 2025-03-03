@@ -6,7 +6,7 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "InsightEngine - AI-Powered Answer Engine",
+  title: "Seekup - AI-Powered Answer Engine",
   description: "Get instant, accurate answers with proper source citations",
 }
 
