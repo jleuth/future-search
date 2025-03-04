@@ -34,12 +34,12 @@ export default function SearchPage({ searchParams }: { searchParams: { q?: strin
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
+    <div className="flex min-h-screen flex-col bg-pattern">
+      <header className="sticky top-0 z-10 border-b border-border/40 bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center">
           <div className="mr-4 flex">
             <a className="flex items-center space-x-2" href="/">
-              <span className="font-bold">InsightEngine</span>
+              <span className="font-bold text-xl gradient-text">Seekup</span>
             </a>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-2">
@@ -51,7 +51,7 @@ export default function SearchPage({ searchParams }: { searchParams: { q?: strin
         </div>
       </header>
       <main className="flex-1">
-        <div className="container py-6">
+        <div className="container py-8">
           <Suspense fallback={<SearchSkeleton />}>
             <SearchResults query={query} />
           </Suspense>

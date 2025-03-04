@@ -9,7 +9,7 @@ export function HeaderNav({ currentPage = "search" }: { currentPage?: "search" |
         variant="ghost"
         size="icon"
         asChild={currentPage !== "search"}
-        className={currentPage === "search" ? "bg-muted" : ""}
+        className={`transition-all duration-300 hover:bg-primary/20 ${currentPage === "search" ? "bg-primary/20 text-primary" : ""}`}
       >
         <Link href="/">
           <Search className="h-5 w-5" />
@@ -20,7 +20,7 @@ export function HeaderNav({ currentPage = "search" }: { currentPage?: "search" |
         variant="ghost"
         size="icon"
         asChild={currentPage !== "history"}
-        className={currentPage === "history" ? "bg-muted" : ""}
+        className={`transition-all duration-300 hover:bg-primary/20 ${currentPage === "history" ? "bg-primary/20 text-primary" : ""}`}
       >
         <Link href="/history">
           <History className="h-5 w-5" />

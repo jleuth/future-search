@@ -8,18 +8,20 @@ export async function generateAnswer(query: string) {
   })
 
   try {
-    const response = await fetch("https://timeapi.io/api/time/current/zone?timeZone=UTC");
-    const data = await response.json();
-    const dateTime = data.dateTime; // Extract the dateTime
+    const response = await fetch("https://timeapi.io/api/time/current/zone?timeZone=UTC")
+    const data = await response.json()
+    const dateTime = data.dateTime // Extract the dateTime
 
-    console.log('Got date and time:' + dateTime)
+    console.log("Got date and time:" + dateTime)
 
     // Use Perplexity to generate an answer with sources
     const { text, sources } = await generateText({
       model: perplexity("sonar"),
       prompt: query,
       // This system prompt helps categorize the answer
-      system: `You are an AI web search assistant, helping users with tech-focused and general knowledge questions. The current time and date is` + dateTime ,
+      system:
+        `You are an AI web search assistant, helping users with tech-focused and general knowledge questions. The current time and date is` +
+        dateTime,
     })
 
     // Extract sources from the Perplexity response

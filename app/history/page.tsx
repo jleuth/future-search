@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Clock, Filter, Search, Trash2, HistoryIcon, Star, StarOff, ArrowUpRight, X } from "lucide-react"
+import { Clock, Filter, Search, Trash2, HistoryIcon, Star, StarOff, ArrowUpRight, X, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -32,6 +32,7 @@ export default function HistoryPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [availableCategories, setAvailableCategories] = useState<string[]>([])
   const [activeTab, setActiveTab] = useState("all")
+  const [isLoaded, setIsLoaded] = useState(false)
 
   // Load search history and update available categories
   useEffect(() => {
@@ -46,6 +47,10 @@ export default function HistoryPage() {
         item.categories.forEach((category) => categories.add(category))
       })
       setAvailableCategories(Array.from(categories))
+
+      if (!isLoaded) {
+        setIsLoaded(true)
+      }
     }
 
     loadHistory()
@@ -53,7 +58,7 @@ export default function HistoryPage() {
     // Set up interval to refresh time remaining
     const interval = setInterval(loadHistory, 60000)
     return () => clearInterval(interval)
-  }, [])
+  }, [isLoaded])
 
   // Filter history based on current filters
   const filteredHistory = searchHistory.filter((item) => {
@@ -103,12 +108,12 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
+    <div className="flex min-h-screen flex-col bg-pattern">
+      <header className="sticky top-0 z-10 border-b border-border/40 bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center">
           <div className="mr-4 flex">
             <Link className="flex items-center space-x-2" href="/">
-              <span className="font-bold">InsightEngine</span>
+              <span className="font-bold text-xl gradient-text">Seekup</span>
             </Link>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-2">
@@ -120,7 +125,7 @@ export default function HistoryPage() {
                     <span className="sr-only">Search</span>
                   </Link>
                 </Button>
-                <Button variant="ghost" size="icon" className="bg-muted">
+                <Button variant="ghost" size="icon" className="bg-primary/20 text-primary">
                   <HistoryIcon className="h-5 w-5" />
                   <span className="sr-only">History</span>
                 </Button>
@@ -131,23 +136,51 @@ export default function HistoryPage() {
       </header>
 
       <main className="flex-1">
-        <div className="container py-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold mb-2">Search History</h1>
+        <div className="container py-8">
+          <div className="mb-6 animate-fade-in">
+            <h1 className="text-2xl font-bold mb-2 gradient-text">Search History</h1>
             <p className="text-muted-foreground">
               View and manage your past searches. Simple searches are automatically deleted after 24 hours.
             </p>
           </div>
 
           <div className="flex flex-col gap-6">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div
+              className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between animate-fade-in"
+              style={{ animationDelay: "0.1s" }}
+            >
               <Tabs defaultValue="all" className="w-full" value={activeTab} onValueChange={setActiveTab}>
-                <TabsList>
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="complex">Complex</TabsTrigger>
-                  <TabsTrigger value="simple">Simple</TabsTrigger>
-                  <TabsTrigger value="preserved">Preserved</TabsTrigger>
-                  <TabsTrigger value="expiring">Expiring</TabsTrigger>
+                <TabsList className="bg-secondary/50 backdrop-blur-sm">
+                  <TabsTrigger
+                    value="all"
+                    className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                  >
+                    All
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="complex"
+                    className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                  >
+                    Complex
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="simple"
+                    className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                  >
+                    Simple
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="preserved"
+                    className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                  >
+                    Preserved
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="expiring"
+                    className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
+                  >
+                    Expiring
+                  </TabsTrigger>
                 </TabsList>
               </Tabs>
 
@@ -156,7 +189,7 @@ export default function HistoryPage() {
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Filter searches..."
-                    className="pl-8 w-full"
+                    className="pl-8 w-full bg-card/50 backdrop-blur-sm border-primary/20 focus:border-primary/50"
                     value={filterText}
                     onChange={(e) => setFilterText(e.target.value)}
                   />
@@ -175,17 +208,22 @@ export default function HistoryPage() {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="bg-card/50 backdrop-blur-sm border-primary/20 hover:bg-primary/10"
+                    >
                       <Filter className="h-4 w-4" />
                       <span className="sr-only">Filter categories</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuContent align="end" className="w-56 bg-card/90 backdrop-blur-lg border-primary/20">
                     {availableCategories.map((category) => (
                       <DropdownMenuCheckboxItem
                         key={category}
                         checked={selectedCategories.includes(category)}
                         onCheckedChange={() => toggleCategory(category)}
+                        className="hover:bg-primary/10"
                       >
                         {category}
                       </DropdownMenuCheckboxItem>
@@ -194,7 +232,7 @@ export default function HistoryPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full mt-2"
+                        className="w-full mt-2 hover:bg-primary/10"
                         onClick={() => setSelectedCategories([])}
                       >
                         Clear filters
@@ -206,10 +244,14 @@ export default function HistoryPage() {
             </div>
 
             {selectedCategories.length > 0 && (
-              <div className="flex flex-wrap gap-2 items-center">
+              <div className="flex flex-wrap gap-2 items-center animate-fade-in" style={{ animationDelay: "0.2s" }}>
                 <span className="text-sm text-muted-foreground">Filtered by:</span>
                 {selectedCategories.map((category) => (
-                  <Badge key={category} variant="secondary" className="flex items-center gap-1">
+                  <Badge
+                    key={category}
+                    variant="secondary"
+                    className="flex items-center gap-1 bg-primary/10 text-primary-foreground"
+                  >
                     {category}
                     <Button
                       variant="ghost"
@@ -222,19 +264,27 @@ export default function HistoryPage() {
                     </Button>
                   </Badge>
                 ))}
-                <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => setSelectedCategories([])}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs h-7 hover:bg-primary/10"
+                  onClick={() => setSelectedCategories([])}
+                >
                   Clear all
                 </Button>
               </div>
             )}
 
             {filteredHistory.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="rounded-full bg-muted p-3 mb-4">
-                  <HistoryIcon className="h-6 w-6 text-muted-foreground" />
+              <div
+                className="flex flex-col items-center justify-center py-12 text-center animate-fade-in"
+                style={{ animationDelay: "0.3s" }}
+              >
+                <div className="rounded-full bg-gradient-to-br from-primary/20 to-primary/10 p-6 mb-4 animate-pulse-slow">
+                  <HistoryIcon className="h-10 w-10 text-primary" />
                 </div>
-                <h3 className="text-lg font-medium mb-1">No search history found</h3>
-                <p className="text-muted-foreground text-sm max-w-md">
+                <h3 className="text-xl font-medium mb-2 gradient-text">No search history found</h3>
+                <p className="text-muted-foreground text-base max-w-md">
                   {filterText || selectedCategories.length > 0
                     ? "Try adjusting your filters to see more results."
                     : "Your search history will appear here once you start searching."}
@@ -242,7 +292,7 @@ export default function HistoryPage() {
                 {(filterText || selectedCategories.length > 0) && (
                   <Button
                     variant="outline"
-                    className="mt-4"
+                    className="mt-6 border-primary/20 bg-primary/10 hover:bg-primary/20"
                     onClick={() => {
                       setFilterText("")
                       setSelectedCategories([])
@@ -254,29 +304,39 @@ export default function HistoryPage() {
                 )}
               </div>
             ) : (
-              <div className="grid gap-4">
-                {filteredHistory.map((item) => {
+              <div className="grid gap-4 stagger-animation">
+                {filteredHistory.map((item, index) => {
                   const timeRemaining = getTimeUntilDeletion(item)
                   const formattedTime = formatTimeRemaining(timeRemaining)
 
                   return (
-                    <Card key={item.id} className="overflow-hidden">
-                      <CardHeader className="pb-2">
+                    <Card
+                      key={item.id}
+                      className="overflow-hidden border-primary/20 bg-card/80 backdrop-blur-sm hover:shadow-md hover:shadow-primary/10 transition-all duration-300 opacity-0 animate-fade-in"
+                    >
+                      <CardHeader className="pb-2 border-b border-border/40 bg-secondary/30">
                         <div className="flex justify-between items-start">
-                          <CardTitle className="text-lg font-medium line-clamp-1">{item.text}</CardTitle>
+                          <CardTitle className="text-lg font-medium line-clamp-1 flex items-center">
+                            {item.isComplex && <Sparkles className="h-4 w-4 text-primary mr-2" />}
+                            {item.text}
+                          </CardTitle>
                           <div className="flex items-center gap-1">
                             {item.isComplex ? (
-                              <Badge variant="default">Complex</Badge>
+                              <Badge variant="default" className="bg-primary/80">
+                                Complex
+                              </Badge>
                             ) : (
-                              <Badge variant="secondary">Simple</Badge>
+                              <Badge variant="secondary" className="bg-secondary/80">
+                                Simple
+                              </Badge>
                             )}
                           </div>
                         </div>
                       </CardHeader>
-                      <CardContent className="pb-2">
-                        <div className="flex flex-wrap gap-2 mb-2">
+                      <CardContent className="pb-2 pt-4">
+                        <div className="flex flex-wrap gap-2 mb-3">
                           {item.categories.map((category) => (
-                            <Badge key={category} variant="outline">
+                            <Badge key={category} variant="outline" className="bg-primary/10 border-primary/20">
                               {category}
                             </Badge>
                           ))}
@@ -295,9 +355,14 @@ export default function HistoryPage() {
                           )}
                         </div>
                       </CardContent>
-                      <CardFooter className="pt-2 flex justify-between">
+                      <CardFooter className="pt-2 flex justify-between border-t border-border/40 bg-secondary/20">
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => handleTogglePreservation(item.id)}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleTogglePreservation(item.id)}
+                            className="border-primary/20 hover:bg-primary/10"
+                          >
                             {item.manuallyPreserved ? (
                               <>
                                 <StarOff className="h-4 w-4 mr-1" />
@@ -310,12 +375,22 @@ export default function HistoryPage() {
                               </>
                             )}
                           </Button>
-                          <Button variant="outline" size="sm" onClick={() => handleDeleteSearch(item.id)}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteSearch(item.id)}
+                            className="border-destructive/20 hover:bg-destructive/10 hover:text-destructive"
+                          >
                             <Trash2 className="h-4 w-4 mr-1" />
                             Delete
                           </Button>
                         </div>
-                        <Button variant="default" size="sm" onClick={() => handleRepeatSearch(item.text)}>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleRepeatSearch(item.text)}
+                          className="bg-primary hover:bg-primary/90"
+                        >
                           <ArrowUpRight className="h-4 w-4 mr-1" />
                           Search Again
                         </Button>
