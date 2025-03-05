@@ -2,7 +2,7 @@ import { createPerplexity } from "@ai-sdk/perplexity"
 import { generateText } from "ai"
 import { determineCategories } from "./search-history"
 
-export async function generateAnswer(query: string) {
+export async function generateAnswer(query: string, searchMode: "sonar" | "sonar-reasoning") {
   const perplexity = createPerplexity({
     apiKey: process.env.PPLX_API,
   })
@@ -16,12 +16,10 @@ export async function generateAnswer(query: string) {
 
     // Use Perplexity to generate an answer with sources
     const { text, sources } = await generateText({
-      model: perplexity("sonar"),
+      model: perplexity(searchMode),
       prompt: query,
       // This system prompt helps categorize the answer
-      system:
-        `You are an AI web search assistant, helping users with tech-focused and general knowledge questions. The current time and date is` +
-        dateTime,
+      system: `You are an AI web search assistant, helping users with tech-focused and general knowledge questions. The current time and date is ${dateTime}`,
     })
 
     // Extract sources from the Perplexity response
@@ -37,6 +35,7 @@ export async function generateAnswer(query: string) {
       answer: text,
       sources: formattedSources,
       categories,
+      searchMode,
     }
   } catch (error) {
     console.error("Error generating answer:", error)
@@ -44,6 +43,7 @@ export async function generateAnswer(query: string) {
       answer: "I'm sorry, I couldn't generate an answer at this time. Please try again later.",
       sources: [],
       categories: ["Error"],
+      searchMode,
     }
   }
 }

@@ -320,7 +320,10 @@ export default function HistoryPage() {
                             {item.isComplex && <Sparkles className="h-4 w-4 text-primary mr-2" />}
                             {item.text}
                           </CardTitle>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="bg-primary/10 border-primary/20">
+                              {item.searchMode === "sonar" ? "Sonar" : "Sonar Reasoning"}
+                            </Badge>
                             {item.isComplex ? (
                               <Badge variant="default" className="bg-primary/80">
                                 Complex

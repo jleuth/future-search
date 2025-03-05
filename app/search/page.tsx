@@ -4,9 +4,11 @@ import { SearchForm } from "@/components/search-form"
 import { SearchResults } from "@/components/search-results"
 import { SearchSkeleton } from "@/components/search-skeleton"
 import { HeaderNav } from "@/components/header-nav"
+import { PageTransition } from "@/components/page-transition"
 
-export default function SearchPage({ searchParams }: { searchParams: { q?: string } }) {
+export default function SearchPage({ searchParams }: { searchParams: { q?: string; mode?: string } }) {
   const query = searchParams.q
+  const searchMode = searchParams.mode === "sonar-reasoning" ? "sonar-reasoning" : "sonar"
 
   if (!query) {
     redirect("/")
@@ -34,30 +36,32 @@ export default function SearchPage({ searchParams }: { searchParams: { q?: strin
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-pattern">
-      <header className="sticky top-0 z-10 border-b border-border/40 bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center">
-          <div className="mr-4 flex">
-            <a className="flex items-center space-x-2" href="/">
-              <span className="font-bold text-xl gradient-text">Seekup</span>
-            </a>
-          </div>
-          <div className="flex flex-1 items-center justify-end space-x-2">
-            <div className="w-full max-w-lg">
-              <SearchForm initialQuery={query} />
+    <PageTransition>
+      <div className="flex min-h-screen flex-col bg-pattern">
+        <header className="sticky top-0 z-10 border-b border-border/40 bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
+          <div className="container flex h-16 items-center">
+            <div className="mr-4 flex">
+              <a className="flex items-center space-x-2" href="/">
+                <span className="font-bold text-xl gradient-text">Seekup</span>
+              </a>
             </div>
-            <HeaderNav currentPage="search" />
+            <div className="flex flex-1 items-center justify-end space-x-2">
+              <div className="w-full max-w-lg">
+                <SearchForm initialQuery={query} />
+              </div>
+              <HeaderNav currentPage="search" />
+            </div>
           </div>
-        </div>
-      </header>
-      <main className="flex-1">
-        <div className="container py-8">
-          <Suspense fallback={<SearchSkeleton />}>
-            <SearchResults query={query} />
-          </Suspense>
-        </div>
-      </main>
-    </div>
+        </header>
+        <main className="flex-1">
+          <div className="container py-8">
+            <Suspense fallback={<SearchSkeleton />}>
+              <SearchResults query={query} searchMode={searchMode} />
+            </Suspense>
+          </div>
+        </main>
+      </div>
+    </PageTransition>
   )
 }
 

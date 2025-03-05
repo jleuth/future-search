@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import ClientLayout from "./ClientLayout"
+import ClientComponent from "./client"
 
 export const metadata: Metadata = {
   title: "Seekup - AI-Powered Answer Engine",
@@ -12,6 +12,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return <ClientLayout>{children}</ClientLayout>
+  return <ClientComponent>{children}</ClientComponent>
 }
 

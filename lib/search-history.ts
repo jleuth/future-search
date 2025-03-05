@@ -6,6 +6,7 @@ export interface SearchQuery {
   categories: string[]
   deleteAt: number | null
   manuallyPreserved: boolean
+  searchMode: "sonar" | "sonar-reasoning"
 }
 
 // Analyze query complexity based on various factors
@@ -68,7 +69,7 @@ export function determineCategories(query: string, answer: string): string[] {
 }
 
 // Save a search query to history
-export function saveSearchQuery(query: string): void {
+export function saveSearchQuery(query: string, searchMode: "sonar" | "sonar-reasoning"): void {
   if (typeof window === "undefined") return
 
   try {
@@ -93,6 +94,7 @@ export function saveSearchQuery(query: string): void {
       categories,
       deleteAt,
       manuallyPreserved: false,
+      searchMode,
     }
 
     // Add to history and save
