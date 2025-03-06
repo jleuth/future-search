@@ -46,9 +46,6 @@ export default function SearchPage({ searchParams }: { searchParams: { q?: strin
               </a>
             </div>
             <div className="flex flex-1 items-center justify-end space-x-2">
-              <div className="w-full max-w-lg">
-                <SearchForm />
-              </div>
               <HeaderNav currentPage="search" />
             </div>
           </div>

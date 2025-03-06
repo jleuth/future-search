@@ -24,6 +24,7 @@ import {
   getTimeUntilDeletion,
   type SearchQuery,
 } from "@/lib/search-history"
+import { HeaderNav } from "@/components/header-nav"
 
 export default function HistoryPage() {
   const router = useRouter()
@@ -96,8 +97,8 @@ export default function HistoryPage() {
   }
 
   // Handle repeating a search
-  const handleRepeatSearch = (query: string) => {
-    router.push(`/search?q=${encodeURIComponent(query)}`)
+  const handleRepeatSearch = (query: string, mode: string) => {
+    router.push(`/search?q=${encodeURIComponent(query)}&mode=${mode}`)
   }
 
   // Toggle a category in the filter
@@ -109,31 +110,18 @@ export default function HistoryPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-pattern">
-      <header className="sticky top-0 z-10 border-b border-border/40 bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center">
-          <div className="mr-4 flex">
-            <Link className="flex items-center space-x-2" href="/">
-              <span className="font-bold text-xl gradient-text">Seekup</span>
-            </Link>
-          </div>
-          <div className="flex flex-1 items-center justify-end space-x-2">
-            <div className="w-full max-w-lg">
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href="/">
-                    <Search className="h-5 w-5" />
-                    <span className="sr-only">Search</span>
-                  </Link>
-                </Button>
-                <Button variant="ghost" size="icon" className="bg-primary/20 text-primary">
-                  <HistoryIcon className="h-5 w-5" />
-                  <span className="sr-only">History</span>
-                </Button>
-              </div>
+        <header className="sticky top-0 z-10 border-b border-border/40 bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
+          <div className="container flex h-16 items-center">
+            <div className="mr-4 flex">
+              <a className="flex items-center space-x-2" href="/">
+                <span className="font-bold text-xl gradient-text">Seekup</span>
+              </a>
+            </div>
+            <div className="flex flex-1 items-center justify-end space-x-2">
+              <HeaderNav currentPage="history" />
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
       <main className="flex-1">
         <div className="container py-8">
@@ -391,7 +379,7 @@ export default function HistoryPage() {
                         <Button
                           variant="default"
                           size="sm"
-                          onClick={() => handleRepeatSearch(item.text)}
+                          onClick={() => handleRepeatSearch(item.text, item.searchMode)}
                           className="bg-primary hover:bg-primary/90"
                         >
                           <ArrowUpRight className="h-4 w-4 mr-1" />

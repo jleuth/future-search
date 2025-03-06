@@ -67,7 +67,7 @@ export function SearchForm({ initialQuery = "" }: { initialQuery?: string }) {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-full px-2 text-muted-foreground transition-colors duration-300"
+                className="h-half px-2 text-muted-foreground transition-colors duration-300"
               >
                 {searchMode === "sonar" ? "Sonar" : "Sonar Reasoning"}
                 <ChevronDown className="ml-1 h-4 w-4" />
