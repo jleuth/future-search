@@ -103,8 +103,6 @@ export function SearchForm({ initialQuery = "" }: { initialQuery?: string }) {
       {isFocused && !isSearching && (
         <div className="absolute -bottom-20 left-0 w-full text-center text-xs text-muted-foreground animate-fade-in">
           <p className="mb-1">Press Enter to search</p>
-          <p className="mb-1">Sonar: Faster and cheaper, but potentially less accurate.</p>
-          <p>Sonar Reasoning: Slower and more expensive, but more accurate.</p>
         </div>
       )}
 
