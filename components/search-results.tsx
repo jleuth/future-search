@@ -7,12 +7,22 @@ import { Sparkles } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import { ThinkDropdown } from "@/components/think-dropdown"
 
-const CustomMarkdownComponents = {
-  think: ({ children }: { children: React.ReactNode }) => <ThinkDropdown>{children}</ThinkDropdown>,
-}
+const extractContent = (text: string, tag: string) => {
+  const regex = new RegExp(`<${tag}>(.*?)</${tag}>`, 'gs');
+  const matches = [...text.matchAll(regex)].map(match => match[1]);
+  return matches.join('\n');
+};
+
+const removeContent = (text: string, tag: string) => {
+  const regex = new RegExp(`<${tag}>.*?</${tag}>`, 'gs');
+  return text.replace(regex, '');
+};
 
 export async function SearchResults({ query, searchMode }: { query: string; searchMode: "sonar" | "sonar-reasoning" }) {
   const { answer, sources, categories, searchMode: usedSearchMode } = await generateAnswer(query, searchMode)
+
+  const ReasoningSteps = extractContent(answer, 'think');
+  const FormattedAnswer = removeContent(answer, 'think');
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -36,7 +46,14 @@ export async function SearchResults({ query, searchMode }: { query: string; sear
         </CardHeader>
         <CardContent className="pt-6">
           <div className="prose prose-sm dark:prose-invert max-w-none">
-            <ReactMarkdown components={CustomMarkdownComponents}>{answer}</ReactMarkdown>
+            {usedSearchMode === 'sonar-reasoning' && (
+            <>
+            <ThinkDropdown>
+              <ReactMarkdown>{ReasoningSteps}</ReactMarkdown>
+            </ThinkDropdown>
+            <br/>
+            </> )}
+            <ReactMarkdown>{FormattedAnswer}</ReactMarkdown>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col items-start gap-4 border-t border-border/40 pt-4 bg-secondary/20">
@@ -65,4 +82,3 @@ export async function SearchResults({ query, searchMode }: { query: string; sear
     </div>
   )
 }
-

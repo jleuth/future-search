@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { saveSearchQuery } from "@/lib/search-history"
 import { Autocomplete } from "@/components/autocomplete"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel } from "@/components/ui/dropdown-menu"
 
 export function SearchForm({ initialQuery = "" }: { initialQuery?: string }) {
   const router = useRouter()
@@ -62,7 +62,7 @@ export function SearchForm({ initialQuery = "" }: { initialQuery?: string }) {
           onBlur={() => setIsFocused(false)}
         />
 
-        <div className="absolute right-0 top-0 h-full flex items-center">
+        <div className="absolute right-0 top-0 h-full flex items-center ">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -73,9 +73,11 @@ export function SearchForm({ initialQuery = "" }: { initialQuery?: string }) {
                 <ChevronDown className="ml-1 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
               <DropdownMenuItem onClick={() => setSearchMode("sonar")}>Sonar</DropdownMenuItem>
+              <DropdownMenuLabel className="text-xs text-gray-500">Faster and cheaper, but possibly less accurate</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => setSearchMode("sonar-reasoning")}>Sonar Reasoning</DropdownMenuItem>
+              <DropdownMenuLabel className="text-xs text-gray-500">Slower and more expensive, but more accurate</DropdownMenuLabel>
             </DropdownMenuContent>
           </DropdownMenu>
 
