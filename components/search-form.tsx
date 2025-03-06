@@ -67,7 +67,7 @@ export function SearchForm({ initialQuery = "" }: { initialQuery?: string }) {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-full px-2 text-muted-foreground hover:text-primary transition-colors duration-300"
+                className="h-full px-2 text-muted-foreground transition-colors duration-300"
               >
                 {searchMode === "sonar" ? "Sonar" : "Sonar Reasoning"}
                 <ChevronDown className="ml-1 h-4 w-4" />
@@ -101,7 +101,7 @@ export function SearchForm({ initialQuery = "" }: { initialQuery?: string }) {
       </div>
 
       {isFocused && !isSearching && (
-        <div className="absolute -bottom-20 left-0 w-full text-center text-xs text-muted-foreground animate-fade-in">
+        <div className="absolute -bottom-10 left-0 w-full text-center text-xs text-muted-foreground animate-fade-in">
           <p className="mb-1">Press Enter to search</p>
         </div>
       )}
