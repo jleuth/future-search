@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import { redirect } from "next/navigation"
-import { SearchForm } from "@/components/search-form"
 import { SearchResults } from "@/components/search-results"
 import { SearchSkeleton } from "@/components/search-skeleton"
 import { HeaderNav } from "@/components/header-nav"

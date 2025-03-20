@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Search, History } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { UserDropdown } from "@/components/auth/user-dropdown"
 
 export function HeaderNav({ currentPage = "search" }: { currentPage?: "search" | "history" }) {
   return (
@@ -27,6 +28,7 @@ export function HeaderNav({ currentPage = "search" }: { currentPage?: "search" |
           <span className="sr-only">History</span>
         </Link>
       </Button>
+      <UserDropdown />
     </div>
   )
 }

@@ -1,9 +1,20 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Clock, Filter, Search, Trash2, HistoryIcon, Star, StarOff, ArrowUpRight, X, Sparkles } from "lucide-react"
+import {
+  Clock,
+  Filter,
+  Search,
+  Trash2,
+  HistoryIcon,
+  Star,
+  StarOff,
+  ArrowUpRight,
+  X,
+  Sparkles,
+  Loader2,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -15,43 +26,80 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  getSearchHistory,
+  toggleSearchPreservation,
+  deleteSearch,
+  cleanupExpiredSearches,
+  formatTimeRemaining,
+  getTimeUntilDeletion,
+  type SearchQuery,
+} from "@/lib/search-history"
 import { HeaderNav } from "@/components/header-nav"
-import { getSearchHistory, cleanupExpiredSearches, toggleSearchPreservation, deleteSearch, getTimeUntilDeletion, formatTimeRemaining, type SearchQuery } from "@/lib/search-history"
+import { useAuth } from "@/components/auth/auth-context"
 
 export default function HistoryPage() {
   const router = useRouter()
+  const { user, isLoading: authLoading } = useAuth()
   const [searchHistory, setSearchHistory] = useState<SearchQuery[]>([])
   const [filterText, setFilterText] = useState("")
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [availableCategories, setAvailableCategories] = useState<string[]>([])
   const [activeTab, setActiveTab] = useState("all")
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isPageLoading, setIsPageLoading] = useState(true)
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading) {
+      if (!user) {
+        router.push("/login")
+      } else {
+        setIsPageLoading(false)
+      }
+    }
+  }, [authLoading, user, router])
 
   // Load search history and update available categories
   useEffect(() => {
     const loadHistory = async () => {
-      await cleanupExpiredSearches()
-      const history = await getSearchHistory()
-      setSearchHistory(history)
+      if (!user) return
 
-      // Extract all unique categories
-      const categories = new Set<string>()
-      history.forEach((item) => {
-        item.categories.forEach((category) => categories.add(category))
-      })
-      setAvailableCategories(Array.from(categories))
+      setIsLoading(true)
+      try {
+        await cleanupExpiredSearches()
+        const history = await getSearchHistory()
+        setSearchHistory(history)
 
-      if (!isLoaded) {
-        setIsLoaded(true)
+        // Extract all unique categories
+        const categories = new Set<string>()
+        history.forEach((item) => {
+          item.categories.forEach((category) => categories.add(category))
+        })
+        setAvailableCategories(Array.from(categories))
+
+        if (!isLoaded) {
+          setIsLoaded(true)
+        }
+      } catch (error) {
+        console.error("Error loading search history:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
-    loadHistory()
+    if (user) {
+      loadHistory()
+    }
 
     // Set up interval to refresh time remaining
-    const interval = setInterval(loadHistory, 60000)
+    const interval = setInterval(() => {
+      if (user) loadHistory()
+    }, 60000)
+
     return () => clearInterval(interval)
-  }, [isLoaded])
+  }, [isLoaded, user])
 
   // Filter history based on current filters
   const filteredHistory = searchHistory.filter((item) => {
@@ -102,20 +150,28 @@ export default function HistoryPage() {
     )
   }
 
+  if (authLoading || isPageLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-pattern">
-        <header className="sticky top-0 z-10 border-b border-border/40 bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
-          <div className="container flex h-16 items-center">
-            <div className="mr-4 flex">
-              <a className="flex items-center space-x-2" href="/">
-                <span className="font-bold text-xl gradient-text">Seekup</span>
-              </a>
-            </div>
-            <div className="flex flex-1 items-center justify-end space-x-2">
-              <HeaderNav currentPage="history" />
-            </div>
+      <header className="sticky top-0 z-10 border-b border-border/40 bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center">
+          <div className="mr-4 flex">
+            <a className="flex items-center space-x-2" href="/">
+              <span className="font-bold text-xl gradient-text">Seekup</span>
+            </a>
           </div>
-        </header>
+          <div className="flex flex-1 items-center justify-end space-x-2">
+            <HeaderNav currentPage="history" />
+          </div>
+        </div>
+      </header>
 
       <main className="flex-1">
         <div className="container py-8">
@@ -287,7 +343,7 @@ export default function HistoryPage() {
               </div>
             ) : (
               <div className="grid gap-4 stagger-animation">
-                {filteredHistory.map((item, index) => {
+                {filteredHistory.map((item) => {
                   const timeRemaining = getTimeUntilDeletion(item)
                   const formattedTime = formatTimeRemaining(timeRemaining)
 

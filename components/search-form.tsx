@@ -8,22 +8,33 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { saveSearchQuery } from "@/lib/search-history"
 import { Autocomplete } from "@/components/autocomplete"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu"
+import { useAuth } from "@/components/auth/auth-context"
 
 export function SearchForm({ initialQuery = "" }: { initialQuery?: string }) {
   const router = useRouter()
+  const { user } = useAuth()
   const [query, setQuery] = useState(initialQuery)
   const [isSearching, setIsSearching] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const [isFocused, setIsFocused] = useState(false)
   const [searchMode, setSearchMode] = useState<"sonar" | "sonar-reasoning">("sonar")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (query.trim()) {
       setIsSearching(true)
-      // Save the search query to history before navigating
-      saveSearchQuery(query.trim(), searchMode)
+
+      // Save the search query to history before navigating if user is logged in
+      if (user) {
+        await saveSearchQuery(query.trim(), searchMode)
+      }
 
       // Add a small delay to show the animation
       setTimeout(() => {
@@ -65,19 +76,23 @@ export function SearchForm({ initialQuery = "" }: { initialQuery?: string }) {
         <div className="absolute right-0 top-0 h-full flex items-center ">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="h-half px-2 text-muted-foreground transition-colors duration-300"
-              >
+              <Button variant="ghost" className="h-half px-2 text-muted-foreground transition-colors duration-300">
                 {searchMode === "sonar" ? "Sonar" : "Sonar Reasoning"}
                 <ChevronDown className="ml-1 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
+            <DropdownMenuContent
+              align="end"
+              className="bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60"
+            >
               <DropdownMenuItem onClick={() => setSearchMode("sonar")}>Sonar</DropdownMenuItem>
-              <DropdownMenuLabel className="text-xs text-gray-500">Faster and cheaper, but possibly less accurate</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs text-gray-500">
+                Faster and cheaper, but possibly less accurate
+              </DropdownMenuLabel>
               <DropdownMenuItem onClick={() => setSearchMode("sonar-reasoning")}>Sonar Reasoning</DropdownMenuItem>
-              <DropdownMenuLabel className="text-xs text-gray-500">Slower and more expensive, but more accurate</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs text-gray-500">
+                Slower and more expensive, but more accurate
+              </DropdownMenuLabel>
             </DropdownMenuContent>
           </DropdownMenu>
 
